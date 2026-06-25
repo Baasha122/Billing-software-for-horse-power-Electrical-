@@ -87,26 +87,34 @@ export default function InvoiceForm({ customers }) {
     if (!customerName) return alert('Please enter a customer name (To:)')
     if (items.some(i => !i.description || i.quantity <= 0)) return alert('Please complete all line items')
 
-    await createInvoice({
-      invoiceNumber,
-      customerName,
-      customerAddress,
-      customerGstin,
-      customerPhone,
-      poNumber,
-      transportMode,
-      vehicleNo,
-      placeOfSupply,
-      items: itemsWithAmount,
-      taxableValue,
-      cgstRate: taxCalculation.cgstRate,
-      sgstRate: taxCalculation.sgstRate,
-      igstRate: taxCalculation.igstRate,
-      cgstAmount: taxCalculation.cgstAmount,
-      sgstAmount: taxCalculation.sgstAmount,
-      igstAmount: taxCalculation.igstAmount,
-      totalAmount: taxCalculation.roundedTotal
-    })
+    try {
+      await createInvoice({
+        invoiceNumber,
+        customerName,
+        customerAddress,
+        customerGstin,
+        customerPhone,
+        poNumber,
+        transportMode,
+        vehicleNo,
+        placeOfSupply,
+        items: itemsWithAmount,
+        taxableValue,
+        cgstRate: taxCalculation.cgstRate,
+        sgstRate: taxCalculation.sgstRate,
+        igstRate: taxCalculation.igstRate,
+        cgstAmount: taxCalculation.cgstAmount,
+        sgstAmount: taxCalculation.sgstAmount,
+        igstAmount: taxCalculation.igstAmount,
+        totalAmount: taxCalculation.roundedTotal
+      })
+    } catch (error) {
+      if (error.message && error.message.includes('NEXT_REDIRECT')) {
+        throw error
+      }
+      console.error(error)
+      alert("Failed to save invoice: " + error.message)
+    }
   }
 
   return (
