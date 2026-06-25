@@ -21,6 +21,7 @@ export default function InvoiceForm({ customers }) {
   
   const [gstType, setGstType] = useState('IGST') // IGST or CGST_SGST
   const [gstPercentage, setGstPercentage] = useState(18)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items]
@@ -87,6 +88,7 @@ export default function InvoiceForm({ customers }) {
     if (!customerName) return alert('Please enter a customer name (To:)')
     if (items.some(i => !i.description || i.quantity <= 0)) return alert('Please complete all line items')
 
+    setIsSubmitting(true)
     try {
       await createInvoice({
         invoiceNumber,
@@ -109,6 +111,7 @@ export default function InvoiceForm({ customers }) {
         totalAmount: taxCalculation.roundedTotal
       })
     } catch (error) {
+      setIsSubmitting(false)
       if (error.message && error.message.includes('NEXT_REDIRECT')) {
         throw error
       }
@@ -251,7 +254,9 @@ export default function InvoiceForm({ customers }) {
             <span>INVOICE TOTAL</span>
             <span style={{ color: 'var(--accent-primary)' }}>{taxCalculation.roundedTotal.toFixed(2)}</span>
           </div>
-          <button type="submit" className="btn" style={{ width: '100%', marginTop: '1.5rem', height: '50px', fontSize: '1.1rem', justifyContent: 'center' }}>Save & Print Invoice</button>
+          <button type="submit" disabled={isSubmitting} className="btn" style={{ width: '100%', marginTop: '1.5rem', height: '50px', fontSize: '1.1rem', justifyContent: 'center', opacity: isSubmitting ? 0.7 : 1 }}>
+            {isSubmitting ? 'Saving Invoice...' : 'Save & Print Invoice'}
+          </button>
         </div>
       </div>
     </form>
