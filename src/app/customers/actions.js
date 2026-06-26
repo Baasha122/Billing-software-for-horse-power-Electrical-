@@ -16,3 +16,10 @@ export async function addCustomer(formData) {
 
   revalidatePath('/customers')
 }
+
+export async function deleteCustomer(id) {
+  await prisma.customer.delete({
+    where: { id }
+  })
+  revalidatePath('/customers')
+}
