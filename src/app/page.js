@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import InvoiceForm from '@/components/InvoiceForm'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Dashboard() {
   const customers = await prisma.customer.findMany({ orderBy: { name: 'asc' } })
 

@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import { markAsPaid } from './actions'
 
+export const dynamic = 'force-dynamic'
+
 export default async function InvoicesPage() {
   const invoices = await prisma.invoice.findMany({
     include: { customer: true },

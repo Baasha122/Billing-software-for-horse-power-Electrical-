@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { addCustomer } from './actions'
+import { addCustomer } from './actions' // Note: deleted deleteCustomer in previous revert
+
+export const dynamic = 'force-dynamic'
 
 export default async function CustomersPage() {
   const customers = await prisma.customer.findMany({
