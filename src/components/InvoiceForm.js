@@ -121,12 +121,12 @@ export default function InvoiceForm({ customers }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }} autoComplete="off">
       <div className="card" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
         <div>
           <h3 style={{ marginBottom: "1rem" }}>To (Customer Details)</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <input type="text" className="input-field" placeholder="Customer Name *" value={customerName} onChange={handleCustomerNameChange} required list="customer-list" />
+            <input type="text" className="input-field" placeholder="Customer Name *" value={customerName} onChange={handleCustomerNameChange} required list="customer-list" autoComplete="off" />
             <datalist id="customer-list">
               {customers.map(c => <option key={c.id} value={c.name} />)}
             </datalist>

@@ -17,13 +17,13 @@ export async function createInvoice(data) {
       orderBy: { createdAt: 'desc' }
     });
     
-    let nextNum = 42; // Starting number as requested
+    let nextNum = 43; // Starting number as requested
     if (lastInvoice && lastInvoice.invoiceNumber) {
       const parts = lastInvoice.invoiceNumber.split('-');
       const lastPart = parts[parts.length - 1];
       if (!isNaN(lastPart)) {
         const lastNum = parseInt(lastPart, 10);
-        nextNum = Math.max(lastNum + 1, 42);
+        nextNum = Math.max(lastNum + 1, 43);
       }
     }
     
