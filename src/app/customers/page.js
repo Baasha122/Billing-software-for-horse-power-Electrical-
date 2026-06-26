@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { addCustomer, deleteCustomer } from './actions'
+import { addCustomer } from './actions'
 
 export default async function CustomersPage() {
   const customers = await prisma.customer.findMany({
@@ -54,7 +54,6 @@ export default async function CustomersPage() {
                   <th style={{ padding: "1rem 0", fontWeight: 500 }}>Contact Info</th>
                   <th style={{ padding: "1rem 0", fontWeight: 500 }}>Address</th>
                   <th style={{ padding: "1rem 0", fontWeight: 500 }}>Added On</th>
-                  <th style={{ padding: "1rem 0", fontWeight: 500, width: "80px", textAlign: "right" }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -69,11 +68,6 @@ export default async function CustomersPage() {
                     </td>
                     <td style={{ padding: "1rem 0", color: "var(--text-secondary)" }}>{customer.address || '-'}</td>
                     <td style={{ padding: "1rem 0", color: "var(--text-secondary)" }}>{new Date(customer.createdAt).toLocaleDateString()}</td>
-                    <td style={{ padding: "1rem 0", textAlign: "right" }}>
-                      <form action={deleteCustomer.bind(null, customer.id)}>
-                        <button type="submit" style={{ background: "transparent", border: "none", color: "var(--danger, #ef4444)", cursor: "pointer", textDecoration: "underline", fontSize: "0.875rem" }}>Delete</button>
-                      </form>
-                    </td>
                   </tr>
                 ))}
               </tbody>
