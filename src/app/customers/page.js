@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { addCustomer } from './actions' // Note: deleted deleteCustomer in previous revert
+import { addCustomer, deleteCustomer } from './actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -56,6 +56,7 @@ export default async function CustomersPage() {
                   <th style={{ padding: "1rem 0", fontWeight: 500 }}>Contact Info</th>
                   <th style={{ padding: "1rem 0", fontWeight: 500 }}>Address</th>
                   <th style={{ padding: "1rem 0", fontWeight: 500 }}>Added On</th>
+                  <th style={{ padding: "1rem 0", fontWeight: 500, textAlign: "right" }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +71,14 @@ export default async function CustomersPage() {
                     </td>
                     <td style={{ padding: "1rem 0", color: "var(--text-secondary)" }}>{customer.address || '-'}</td>
                     <td style={{ padding: "1rem 0", color: "var(--text-secondary)" }}>{new Date(customer.createdAt).toLocaleDateString()}</td>
+                    <td style={{ padding: "1rem 0", textAlign: "right" }}>
+                      <form action={deleteCustomer}>
+                        <input type="hidden" name="id" value={customer.id} />
+                        <button type="submit" style={{ background: "var(--danger-color, #ef4444)", color: "white", border: "none", borderRadius: "4px", padding: "0.5rem 1rem", cursor: "pointer", fontSize: "0.875rem" }}>
+                          Delete
+                        </button>
+                      </form>
+                    </td>
                   </tr>
                 ))}
               </tbody>

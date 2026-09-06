@@ -36,7 +36,7 @@ export default async function PrintInvoicePage(props) {
           .sidebar, .top-nav { display: none !important; }
           .main-content { padding: 0 !important; overflow: visible !important; width: 100% !important; margin: 0 !important; }
           .no-print { display: none !important; }
-          @page { margin: 0.5cm; }
+          @page { size: A4; margin: 0.5cm; }
         }
         .invoice-box { border: 1px solid black; }
         .grid-border { border: 1px solid black; }
@@ -146,12 +146,7 @@ export default async function PrintInvoicePage(props) {
                   <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.quantity}</td>
                   <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                   <td style={{ borderBottom: 'none', textAlign: 'center' }}>
-                    {totalTaxRate > 0 ? (
-                      <>
-                        {itemTaxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}<br/>
-                        <span style={{ fontSize: '9px' }}>({totalTaxRate}%)</span>
-                      </>
-                    ) : '-'}
+                    {totalTaxRate > 0 ? itemTaxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-'}
                   </td>
                   <td style={{ borderRight: 'none', borderBottom: 'none', textAlign: 'center' }}>{itemTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                 </tr>
@@ -174,47 +169,63 @@ export default async function PrintInvoicePage(props) {
         </table>
 
         {/* Totals Row under table */}
-        <div style={{ display: 'flex' }} className="border-top border-bottom">
-          <div style={{ width: '58%', padding: '4px 8px' }}>
-            Total Items / Qty: {items.length} / {items.reduce((sum, i) => sum + i.quantity, 0).toFixed(2)}
-          </div>
-          <div style={{ width: '42%' }}>
-            <div style={{ display: 'flex' }} className="border-bottom">
+        <div style={{ display: 'flex', flexDirection: 'column' }} className="border-top">
+          
+          {/* Row 1: Taxable Amount */}
+          <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
+            <div style={{ width: '58%', padding: '4px 8px' }}>
+              Total Items / Qty: {items.length} / {items.reduce((sum, i) => sum + i.quantity, 0).toFixed(2)}
+            </div>
+            <div style={{ width: '42%', display: 'flex' }}>
               <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>Taxable Amount</div>
               <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }} className="bold">
                 ₹ {invoice.taxableValue.toLocaleString('en-IN', {minimumFractionDigits: 2})}
               </div>
             </div>
-            
-            {invoice.igstRate > 0 ? (
-              <div style={{ display: 'flex' }} className="border-bottom">
+          </div>
+          
+          {/* Row 2: IGST or CGST/SGST */}
+          {invoice.igstRate > 0 ? (
+            <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
+              <div style={{ width: '58%', padding: '4px 8px' }}></div>
+              <div style={{ width: '42%', display: 'flex' }}>
                 <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>IGST {invoice.igstRate}%</div>
                 <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }}>
                   ₹ {invoice.igstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
                 </div>
               </div>
-            ) : (
-              <>
-                {invoice.cgstRate > 0 && (
-                  <div style={{ display: 'flex' }} className="border-bottom">
+            </div>
+          ) : (
+            <>
+              {invoice.cgstRate > 0 && (
+                <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
+                  <div style={{ width: '58%', padding: '4px 8px' }}></div>
+                  <div style={{ width: '42%', display: 'flex' }}>
                     <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>CGST {invoice.cgstRate}%</div>
                     <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }}>
                       ₹ {invoice.cgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
                     </div>
                   </div>
-                )}
-                {invoice.sgstRate > 0 && (
-                  <div style={{ display: 'flex' }} className="border-bottom">
+                </div>
+              )}
+              {invoice.sgstRate > 0 && (
+                <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
+                  <div style={{ width: '58%', padding: '4px 8px' }}></div>
+                  <div style={{ width: '42%', display: 'flex' }}>
                     <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>SGST {invoice.sgstRate}%</div>
                     <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }}>
                       ₹ {invoice.sgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
                     </div>
                   </div>
-                )}
-              </>
-            )}
+                </div>
+              )}
+            </>
+          )}
 
-            <div style={{ display: 'flex' }}>
+          {/* Row 3: Total */}
+          <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
+            <div style={{ width: '58%', padding: '4px 8px' }}></div>
+            <div style={{ width: '42%', display: 'flex' }}>
               <div style={{ width: '60%', padding: '4px', textAlign: 'right', fontSize: '14px' }} className="bold">Total</div>
               <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black', fontSize: '14px' }} className="bold">
                 ₹ {invoice.totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
