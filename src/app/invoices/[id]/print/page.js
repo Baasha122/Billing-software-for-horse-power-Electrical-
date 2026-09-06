@@ -51,7 +51,7 @@ export default async function PrintInvoicePage(props) {
         th { text-align: left; }
       `}} />
 
-      <div className="no-print" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
+      <div className="no-print" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-start', gap: '15px' }}>
         <a href="/invoices" className="btn" style={{ backgroundColor: 'var(--bg-tertiary)' }}>Back</a>
         <PrintButton />
       </div>
