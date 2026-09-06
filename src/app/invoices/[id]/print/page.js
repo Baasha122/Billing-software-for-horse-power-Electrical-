@@ -29,14 +29,24 @@ export default async function PrintInvoicePage(props) {
   const { customer, items } = invoice
 
   return (
-    <div style={{ maxWidth: '850px', margin: '0 auto', backgroundColor: 'white', color: 'black', fontFamily: 'Arial, sans-serif', padding: '20px', fontSize: '11px' }}>
+    <div className="print-container" style={{ maxWidth: '850px', margin: '0 auto', backgroundColor: 'white', color: 'black', fontFamily: 'Arial, sans-serif', padding: '20px', fontSize: '11px' }}>
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
-          body { background: white; margin: 0; }
+          body, html, .app-container { 
+            background: white; 
+            margin: 0; 
+            height: auto !important; 
+            min-height: auto !important; 
+            overflow: visible !important; 
+            display: block !important; 
+          }
           .sidebar, .top-nav { display: none !important; }
-          .main-content { padding: 0 !important; overflow: visible !important; width: 100% !important; margin: 0 !important; }
+          .main-content { padding: 0 !important; overflow: visible !important; width: 100% !important; margin: 0 !important; height: auto !important; }
           .no-print { display: none !important; }
           @page { size: A4; margin: 0.5cm; }
+          .invoice-box { min-height: 275mm !important; height: 275mm !important; }
+          .invoice-page { break-after: page; page-break-after: always; margin-bottom: 0 !important; }
+          .print-container { padding: 0 !important; }
         }
         .invoice-box { border: 1px solid black; }
         .grid-border { border: 1px solid black; }
@@ -56,12 +66,18 @@ export default async function PrintInvoicePage(props) {
         <PrintButton />
       </div>
 
-      <div className="invoice-box">
-        {/* Top Header */}
-        <div className="border-bottom p-2" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-          <div className="bold" style={{ fontSize: '14px', letterSpacing: '1px' }}>TAX INVOICE</div>
-          <div style={{ position: 'absolute', right: '8px', top: '4px', fontSize: '10px' }}>ORIGINAL FOR RECIPIENT</div>
-        </div>
+      {[
+        'ORIGINAL FOR RECIPIENT',
+        'DUPLICATE',
+        'TRIPLICATE'
+      ].map((copyLabel, index) => (
+        <div key={index} className="invoice-page" style={{ pageBreakAfter: index < 2 ? 'always' : 'auto', marginBottom: index < 2 ? '40px' : '0' }}>
+          <div className="invoice-box" style={{ display: 'flex', flexDirection: 'column', minHeight: '1050px' }}>
+            {/* Top Header */}
+            <div className="border-bottom p-2" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+              <div className="bold" style={{ fontSize: '14px', letterSpacing: '1px' }}>TAX INVOICE</div>
+              <div style={{ position: 'absolute', right: '8px', top: '4px', fontSize: '10px' }}>{copyLabel}</div>
+            </div>
 
         {/* Company & Invoice Info */}
         <div style={{ display: 'flex' }} className="border-bottom">
@@ -115,46 +131,46 @@ export default async function PrintInvoicePage(props) {
         </div>
 
         {/* Items Table */}
-        <table style={{ borderLeft: 'none', borderRight: 'none', borderBottom: 'none' }}>
-          <thead>
-            <tr>
-              <th style={{ borderTop: 'none', borderLeft: 'none', width: '6%', textAlign: 'center' }}>S. No.</th>
-              <th style={{ borderTop: 'none', width: '35%', textAlign: 'center' }}>Item</th>
-              <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>HSN/SAC</th>
-              <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>Rate/Item</th>
-              <th style={{ borderTop: 'none', width: '7%', textAlign: 'center' }}>Qty</th>
-              <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>Taxable Value</th>
-              <th style={{ borderTop: 'none', width: '12%', textAlign: 'center' }}>Tax Amount</th>
-              <th style={{ borderTop: 'none', borderRight: 'none', width: '13%', textAlign: 'center' }}>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, idx) => {
-              // Calculate item tax based on global invoice rates (approximate for item row)
-              const totalTaxRate = (invoice.cgstRate || 0) + (invoice.sgstRate || 0) + (invoice.igstRate || 0);
-              const itemTaxAmount = (item.amount * totalTaxRate) / 100;
-              const itemTotal = item.amount + itemTaxAmount;
+        <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          <table style={{ borderLeft: 'none', borderRight: 'none', borderBottom: 'none', height: '100%' }}>
+            <thead>
+              <tr>
+                <th style={{ borderTop: 'none', borderLeft: 'none', width: '6%', textAlign: 'center' }}>S. No.</th>
+                <th style={{ borderTop: 'none', width: '35%', textAlign: 'center' }}>Item</th>
+                <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>HSN/SAC</th>
+                <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>Rate/Item</th>
+                <th style={{ borderTop: 'none', width: '7%', textAlign: 'center' }}>Qty</th>
+                <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>Taxable Value</th>
+                <th style={{ borderTop: 'none', width: '12%', textAlign: 'center' }}>Tax Amount</th>
+                <th style={{ borderTop: 'none', borderRight: 'none', width: '13%', textAlign: 'center' }}>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, idx) => {
+                // Calculate item tax based on global invoice rates (approximate for item row)
+                const totalTaxRate = (invoice.cgstRate || 0) + (invoice.sgstRate || 0) + (invoice.igstRate || 0);
+                const itemTaxAmount = (item.amount * totalTaxRate) / 100;
+                const itemTotal = item.amount + itemTaxAmount;
 
-              return (
-                <tr key={item.id} style={{ height: '30px' }}>
-                  <td style={{ borderLeft: 'none', borderBottom: 'none', textAlign: 'center' }}>{idx + 1}</td>
-                  <td style={{ borderBottom: 'none', textAlign: 'center' }}>
-                    <div className="bold">{item.description}</div>
-                  </td>
-                  <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.hsnCode}</td>
-                  <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.rate.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                  <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.quantity}</td>
-                  <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                  <td style={{ borderBottom: 'none', textAlign: 'center' }}>
-                    {totalTaxRate > 0 ? itemTaxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-'}
-                  </td>
-                  <td style={{ borderRight: 'none', borderBottom: 'none', textAlign: 'center' }}>{itemTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                </tr>
-              )
-            })}
-            {/* Empty Rows */}
-            {Array.from({ length: Math.max(0, 10 - items.length) }).map((_, i) => (
-              <tr key={'empty'+i} style={{ height: '25px' }}>
+                return (
+                  <tr key={item.id} style={{ height: '30px' }}>
+                    <td style={{ borderLeft: 'none', borderBottom: 'none', textAlign: 'center' }}>{idx + 1}</td>
+                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>
+                      <div className="bold">{item.description}</div>
+                    </td>
+                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.hsnCode}</td>
+                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.rate.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.quantity}</td>
+                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>
+                      {totalTaxRate > 0 ? itemTaxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-'}
+                    </td>
+                    <td style={{ borderRight: 'none', borderBottom: 'none', textAlign: 'center' }}>{itemTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                  </tr>
+                )
+              })}
+              {/* Empty Row that stretches to fill remaining space */}
+              <tr style={{ height: '100%' }}>
                 <td style={{ borderLeft: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
                 <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
                 <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
@@ -164,9 +180,9 @@ export default async function PrintInvoicePage(props) {
                 <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
                 <td style={{ borderRight: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
 
         {/* Totals Row under table */}
         <div style={{ display: 'flex', flexDirection: 'column' }} className="border-top">
@@ -281,7 +297,9 @@ export default async function PrintInvoicePage(props) {
 
 
 
-      </div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
