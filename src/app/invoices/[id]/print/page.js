@@ -66,240 +66,183 @@ export default async function PrintInvoicePage(props) {
         <PrintButton />
       </div>
 
-      {[
-        'ORIGINAL FOR RECIPIENT',
-        'DUPLICATE',
-        'TRIPLICATE'
-      ].map((copyLabel, index) => (
-        <div key={index} className="invoice-page" style={{ pageBreakAfter: index < 2 ? 'always' : 'auto', marginBottom: index < 2 ? '40px' : '0' }}>
-          <div className="invoice-box" style={{ display: 'flex', flexDirection: 'column', minHeight: '1050px' }}>
-            {/* Top Header */}
-            <div className="border-bottom p-2" style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-              <div className="bold" style={{ fontSize: '14px', letterSpacing: '1px' }}>TAX INVOICE</div>
-              <div style={{ position: 'absolute', right: '8px', top: '4px', fontSize: '10px' }}>{copyLabel}</div>
+      <div className="invoice-page">
+        <div className="invoice-box" style={{ display: 'flex', flexDirection: 'column', minHeight: '1050px' }}>
+          {/* Top Header */}
+          <div className="border-bottom" style={{ padding: '10px', textAlign: 'center', position: 'relative' }}>
+            <div style={{ position: 'absolute', left: '10px', top: '10px', fontSize: '10px' }}>2qGSTIN: 33AARFH4498J1ZQ</div>
+            <div style={{ fontSize: '14px', letterSpacing: '1px' }}>TAX INVOICE</div>
+            <div style={{ fontSize: '20px', margin: '5px 0' }}>HORSE POWER ELECTRICAL</div>
+            <div style={{ fontSize: '12px' }}>Mfrs.: Motors &amp; Pumps</div>
+            <div style={{ fontSize: '11px' }}>18/2 Sukaranthottam, Vivekananda Street, Udayampalayam, Chinnavedampatti (po), Coimbatore -641 049</div>
+          </div>
+
+          {/* Customer & Invoice Info */}
+          <div style={{ display: 'flex' }} className="border-bottom">
+            {/* Left Column - To */}
+            <div style={{ width: '50%' }} className="border-right p-2">
+              <div>To: {customer.name}</div>
+              <div style={{ whiteSpace: 'pre-wrap', marginLeft: '20px' }}>{customer.address}</div>
+              {customer.gstin && <div style={{ marginLeft: '20px' }}>GSTIN {customer.gstin}</div>}
+              {customer.phone && <div style={{ marginLeft: '20px' }}>PHN {customer.phone}</div>}
             </div>
-
-        {/* Company & Invoice Info */}
-        <div style={{ display: 'flex' }} className="border-bottom">
-          <div style={{ width: '50%' }} className="border-right p-4">
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-
-              <div>
-                <div className="bold" style={{ fontSize: '16px' }}>HORSE POWER ELECTRICAL</div>
-                <div style={{ marginTop: '4px' }}><span className="bold">GSTIN 33AARFH4498I1ZQ</span></div>
-                <div>18/2 Sukaranthottam, Vivekananda Street,</div>
-                <div>Udayampalayam, Chinnavedampatti (po),</div>
-                <div>Coimbatore - 641 049</div>
-                <div>Mobile: 9894301078</div>
+            
+            {/* Right Column - Details */}
+            <div style={{ width: '50%' }}>
+              <div style={{ display: 'flex', padding: '4px' }} className="border-bottom">
+                <div style={{ width: '50%' }}>S. No: {invoice.invoiceNumber}</div>
+                <div style={{ width: '50%' }}>DATE {new Date(invoice.createdAt).toLocaleDateString('en-GB').replace(/\//g, '.')}</div>
+              </div>
+              <div className="p-2">
+                <table style={{ border: 'none', width: '100%', padding: 0 }}>
+                  <tbody>
+                    <tr><td style={{ border: 'none', padding: '2px 0', width: '40%' }}>P.O No &amp; Date</td><td style={{ border: 'none', padding: '2px 0' }}>:</td></tr>
+                    <tr><td style={{ border: 'none', padding: '2px 0' }}>Transport Mode</td><td style={{ border: 'none', padding: '2px 0' }}>:</td></tr>
+                    <tr><td style={{ border: 'none', padding: '2px 0' }}>Vehicle No</td><td style={{ border: 'none', padding: '2px 0' }}>:</td></tr>
+                    <tr><td style={{ border: 'none', padding: '2px 0' }}>Place of supply</td><td style={{ border: 'none', padding: '2px 0' }}>: {invoice.placeOfSupply}</td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div style={{ width: '50%' }}>
-            <div style={{ display: 'flex' }} className="border-bottom">
-              <div style={{ width: '50%' }} className="border-right p-4">
-                <div>S. No.</div>
-                <div className="bold">{invoice.invoiceNumber}</div>
-              </div>
-              <div style={{ width: '50%' }} className="p-4">
-                <div>Invoice Date:</div>
-                <div className="bold">{new Date(invoice.createdAt).toLocaleDateString('en-GB')}</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex' }}>
-              <div style={{ width: '100%' }} className="p-4">
-                <div>Place of Supply:</div>
-                <div className="bold">{invoice.placeOfSupply || 'Tamil Nadu'}</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Customer Details */}
-        <div style={{ display: 'flex' }} className="border-bottom">
-          <div style={{ width: '50%' }} className="border-right p-4">
-            <div>Customer Details:</div>
-            <div className="bold">{customer.name}</div>
-            <div style={{ marginTop: '4px' }}>Billing address:</div>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{customer.address}</div>
-            {customer.gstin && <div>GSTIN: {customer.gstin}</div>}
-            {customer.phone && <div>Ph: {customer.phone}</div>}
-          </div>
-          <div style={{ width: '50%' }} className="p-4">
-            <div>Shipping address:</div>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{customer.address}</div>
-          </div>
-        </div>
-
-        {/* Items Table */}
-        <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-          <table style={{ borderLeft: 'none', borderRight: 'none', borderBottom: 'none', height: '100%' }}>
-            <thead>
-              <tr>
-                <th style={{ borderTop: 'none', borderLeft: 'none', width: '6%', textAlign: 'center' }}>S. No.</th>
-                <th style={{ borderTop: 'none', width: '35%', textAlign: 'center' }}>Item</th>
-                <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>HSN/SAC</th>
-                <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>Rate/Item</th>
-                <th style={{ borderTop: 'none', width: '7%', textAlign: 'center' }}>Qty</th>
-                <th style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>Taxable Value</th>
-                <th style={{ borderTop: 'none', width: '12%', textAlign: 'center' }}>Tax Amount</th>
-                <th style={{ borderTop: 'none', borderRight: 'none', width: '13%', textAlign: 'center' }}>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, idx) => {
-                // Calculate item tax based on global invoice rates (approximate for item row)
-                const totalTaxRate = (invoice.cgstRate || 0) + (invoice.sgstRate || 0) + (invoice.igstRate || 0);
-                const itemTaxAmount = (item.amount * totalTaxRate) / 100;
-                const itemTotal = item.amount + itemTaxAmount;
-
-                return (
-                  <tr key={item.id} style={{ height: '30px' }}>
-                    <td style={{ borderLeft: 'none', borderBottom: 'none', textAlign: 'center' }}>{idx + 1}</td>
-                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>
-                      <div className="bold">{item.description}</div>
-                    </td>
-                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.hsnCode}</td>
-                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.rate.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.quantity}</td>
-                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                    <td style={{ borderBottom: 'none', textAlign: 'center' }}>
-                      {totalTaxRate > 0 ? itemTaxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-'}
-                    </td>
-                    <td style={{ borderRight: 'none', borderBottom: 'none', textAlign: 'center' }}>{itemTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                  </tr>
-                )
-              })}
-              {/* Empty Row that stretches to fill remaining space */}
-              <tr style={{ height: '100%' }}>
-                <td style={{ borderLeft: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                <td style={{ borderRight: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        {/* Totals Row under table */}
-        <div style={{ display: 'flex', flexDirection: 'column' }} className="border-top">
-          
-          {/* Row 1: Taxable Amount */}
-          <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
-            <div style={{ width: '58%', padding: '4px 8px' }}>
-              Total Items / Qty: {items.length} / {items.reduce((sum, i) => sum + i.quantity, 0).toFixed(2)}
-            </div>
-            <div style={{ width: '42%', display: 'flex' }}>
-              <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>Taxable Amount</div>
-              <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }} className="bold">
-                ₹ {invoice.taxableValue.toLocaleString('en-IN', {minimumFractionDigits: 2})}
-              </div>
-            </div>
-          </div>
-          
-          {/* Row 2: IGST or CGST/SGST */}
-          {invoice.igstRate > 0 ? (
-            <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
-              <div style={{ width: '58%', padding: '4px 8px' }}></div>
-              <div style={{ width: '42%', display: 'flex' }}>
-                <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>IGST {invoice.igstRate}%</div>
-                <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }}>
-                  ₹ {invoice.igstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              {invoice.cgstRate > 0 && (
-                <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
-                  <div style={{ width: '58%', padding: '4px 8px' }}></div>
-                  <div style={{ width: '42%', display: 'flex' }}>
-                    <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>CGST {invoice.cgstRate}%</div>
-                    <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }}>
-                      ₹ {invoice.cgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {invoice.sgstRate > 0 && (
-                <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
-                  <div style={{ width: '58%', padding: '4px 8px' }}></div>
-                  <div style={{ width: '42%', display: 'flex' }}>
-                    <div style={{ width: '60%', padding: '4px', textAlign: 'right' }}>SGST {invoice.sgstRate}%</div>
-                    <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black' }}>
-                      ₹ {invoice.sgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Row 3: Total */}
-          <div style={{ display: 'flex', width: '100%' }} className="border-bottom">
-            <div style={{ width: '58%', padding: '4px 8px' }}></div>
-            <div style={{ width: '42%', display: 'flex' }}>
-              <div style={{ width: '60%', padding: '4px', textAlign: 'right', fontSize: '14px' }} className="bold">Total</div>
-              <div style={{ width: '40%', padding: '4px', textAlign: 'right', borderLeft: '1px solid black', fontSize: '14px' }} className="bold">
-                ₹ {invoice.totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-bottom p-2" style={{ textAlign: 'right' }}>
-          Total amount (in words): INR {numberToWords(Math.round(invoice.totalAmount))}
-        </div>
-        <div className="border-bottom p-2" style={{ textAlign: 'right' }}>
-          Amount Payable: <span className="bold">₹ {invoice.totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
-        </div>
-
-        {/* Footer info grid */}
-        <div style={{ display: 'flex', minHeight: '120px' }}>
-          {/* Bank Details */}
-          <div style={{ width: '50%' }} className="border-right p-4">
-            <div className="bold" style={{ marginBottom: '5px' }}>Bank Details:</div>
-            <table style={{ border: 'none', width: 'auto' }}>
+          {/* Items Table */}
+          <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+            <table style={{ borderLeft: 'none', borderRight: 'none', borderBottom: 'none', height: '100%' }}>
+              <thead>
+                <tr>
+                  <th rowSpan="2" style={{ borderTop: 'none', borderLeft: 'none', width: '5%', textAlign: 'center' }}>S<br/>no</th>
+                  <th rowSpan="2" style={{ borderTop: 'none', width: '45%', textAlign: 'center' }}>Description of Goods</th>
+                  <th rowSpan="2" style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>HSN<br/>Code</th>
+                  <th rowSpan="2" style={{ borderTop: 'none', width: '8%', textAlign: 'center' }}>Quantity</th>
+                  <th colSpan="2" style={{ borderTop: 'none', width: '16%', textAlign: 'center', borderBottom: '1px solid black' }}>Rate</th>
+                  <th colSpan="2" style={{ borderTop: 'none', borderRight: 'none', width: '16%', textAlign: 'center', borderBottom: '1px solid black' }}>Amount</th>
+                </tr>
+                <tr>
+                  <th style={{ textAlign: 'center', borderTop: 'none' }}>Rs</th>
+                  <th style={{ textAlign: 'center', borderTop: 'none' }}>ps.</th>
+                  <th style={{ textAlign: 'center', borderTop: 'none' }}>Rs</th>
+                  <th style={{ borderRight: 'none', textAlign: 'center', borderTop: 'none' }}>ps.</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr>
-                  <td style={{ border: 'none', padding: '2px 10px 2px 0' }}>Bank:</td>
-                  <td style={{ border: 'none', padding: '2px 0' }} className="bold">CITY UNION BANK</td>
-                </tr>
-                <tr>
-                  <td style={{ border: 'none', padding: '2px 10px 2px 0' }}>Account #:</td>
-                  <td style={{ border: 'none', padding: '2px 0' }} className="bold">510909010325465</td>
-                </tr>
-                <tr>
-                  <td style={{ border: 'none', padding: '2px 10px 2px 0' }}>IFSC:</td>
-                  <td style={{ border: 'none', padding: '2px 0' }}>CIUB0000487</td>
-                </tr>
-                <tr>
-                  <td style={{ border: 'none', padding: '2px 10px 2px 0' }}>Branch:</td>
-                  <td style={{ border: 'none', padding: '2px 0' }}>Coimbatore</td>
+                {items.map((item, idx) => {
+                  const rateSplit = item.rate.toFixed(2).split('.');
+                  const amountSplit = item.amount.toFixed(2).split('.');
+                  return (
+                    <tr key={item.id} style={{ height: '30px' }}>
+                      <td style={{ borderLeft: 'none', borderBottom: 'none', textAlign: 'center' }}>{idx + 1}</td>
+                      <td style={{ borderBottom: 'none' }}>
+                        <div style={{ paddingLeft: '5px' }}>{item.description}</div>
+                      </td>
+                      <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.hsnCode}</td>
+                      <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.quantity}</td>
+                      <td style={{ borderBottom: 'none', textAlign: 'right' }}>{rateSplit[0]}</td>
+                      <td style={{ borderBottom: 'none', textAlign: 'center' }}>{rateSplit[1]}</td>
+                      <td style={{ borderBottom: 'none', textAlign: 'right' }}>{amountSplit[0]}</td>
+                      <td style={{ borderRight: 'none', borderBottom: 'none', textAlign: 'center' }}>{amountSplit[1]}</td>
+                    </tr>
+                  )
+                })}
+                {/* Empty Row that stretches to fill remaining space */}
+                <tr style={{ height: '100%' }}>
+                  <td style={{ borderLeft: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderRight: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
                 </tr>
               </tbody>
             </table>
           </div>
-          
-          {/* Signature */}
-          <div style={{ width: '50%', position: 'relative' }} className="p-4">
-            <div style={{ textAlign: 'right', fontSize: '10px', color: '#555' }}>For HORSE POWER ELECTRICAL</div>
-            <div style={{ position: 'absolute', bottom: '10px', right: '15px', textAlign: 'center' }}>
-              <div style={{ marginTop: '40px', borderTop: '1px solid black', width: '150px', paddingTop: '5px' }}>
-                Authorised Signatory
+
+          {/* Footer Area */}
+          <div style={{ display: 'flex', borderTop: '1px solid black' }}>
+            {/* Left Footer: Words, Bank, Sign */}
+            <div style={{ width: '60%', borderRight: '1px solid black', display: 'flex', flexDirection: 'column' }}>
+              <div className="border-bottom p-2" style={{ minHeight: '40px' }}>
+                Total Amount (in words) : {numberToWords(Math.round(invoice.totalAmount)).toUpperCase()}
               </div>
+              
+              <div className="border-bottom p-2" style={{ flexGrow: 1 }}>
+                <div style={{ textAlign: 'center', marginBottom: '5px' }}>Bank Details</div>
+                <table style={{ border: 'none', width: '100%' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ border: 'none', padding: '2px 0', width: '40%' }}>Name of the Bank</td>
+                      <td style={{ border: 'none', padding: '2px 0' }}>: CITY UNION BANK</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: 'none', padding: '2px 0' }}>Branch</td>
+                      <td style={{ border: 'none', padding: '2px 0' }}>: Maniyakaranpalayam</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: 'none', padding: '2px 0' }}>A/c</td>
+                      <td style={{ border: 'none', padding: '2px 0' }}>: 510909010325465</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: 'none', padding: '2px 0' }}>IFSC Code</td>
+                      <td style={{ border: 'none', padding: '2px 0' }}>: CIUB0000487</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="border-bottom p-2">
+                E-way Bill No :
+              </div>
+
+              <div className="p-2" style={{ position: 'relative', height: '60px' }}>
+                <div style={{ fontSize: '10px' }}>Received the above in good condition</div>
+                <div style={{ fontSize: '10px', marginTop: '5px' }}>Receiver's signature</div>
+              </div>
+            </div>
+
+            {/* Right Footer: Totals */}
+            <div style={{ width: '40%', display: 'flex', flexDirection: 'column' }}>
+              <table style={{ border: 'none', width: '100%', height: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                  <tr>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>TAXABLE VALUE</td>
+                    <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.taxableValue.toFixed(0)}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>CGST @ {invoice.cgstRate || 9}</td>
+                    <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.cgstAmount ? invoice.cgstAmount.toFixed(0) : ''}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>SGST @ {invoice.sgstRate || 9}</td>
+                    <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.sgstAmount ? invoice.sgstAmount.toFixed(0) : ''}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>IGST @</td>
+                    <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.igstAmount ? invoice.igstAmount.toFixed(0) : ''}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>Rounded off (+/-)</td>
+                    <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}></td>
+                  </tr>
+                  <tr>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>INVOICE TOTAL</td>
+                    <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.totalAmount.toFixed(0)}</td>
+                  </tr>
+                  <tr>
+                    <td colSpan="2" style={{ border: 'none', padding: '4px', textAlign: 'center', height: '100px', verticalAlign: 'top', position: 'relative' }}>
+                      <div style={{ fontSize: '11px', paddingTop: '5px' }}>for HORSE POWER ELECTRICAL</div>
+                      <div style={{ position: 'absolute', bottom: '10px', width: '100%', textAlign: 'center', fontSize: '10px', color: '#555' }}>
+                        Authorised Signatory
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-
-
-
-          </div>
-        </div>
-      ))}
+      </div>
     </div>
   )
 }
