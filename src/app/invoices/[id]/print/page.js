@@ -214,15 +214,15 @@ export default async function PrintInvoicePage(props) {
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.taxableValue.toFixed(0)}</td>
                   </tr>
                   <tr>
-                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>CGST @ {invoice.cgstRate ? \`\${invoice.cgstRate}%\` : ''}</td>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>CGST @ {invoice.cgstRate ? `${invoice.cgstRate}%` : ''}</td>
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.cgstAmount ? invoice.cgstAmount.toFixed(0) : ''}</td>
                   </tr>
                   <tr>
-                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>SGST @ {invoice.sgstRate ? \`\${invoice.sgstRate}%\` : ''}</td>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>SGST @ {invoice.sgstRate ? `${invoice.sgstRate}%` : ''}</td>
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.sgstAmount ? invoice.sgstAmount.toFixed(0) : ''}</td>
                   </tr>
                   <tr>
-                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>IGST @ {invoice.igstRate ? \`\${invoice.igstRate}%\` : ''}</td>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>IGST @ {invoice.igstRate ? `${invoice.igstRate}%` : ''}</td>
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.igstAmount ? invoice.igstAmount.toFixed(0) : ''}</td>
                   </tr>
                   <tr>
