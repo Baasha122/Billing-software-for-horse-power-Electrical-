@@ -23,6 +23,11 @@ export default function RootLayout({ children }) {
               <li><a href="/">Billing Dashboard</a></li>
               <li><a href="/customers">Customer details fill</a></li>
               <li><a href="/export">Report to excel</a></li>
+              <li style={{ marginTop: 'auto', paddingTop: '20px' }}>
+                <a href="https://vercel.com/dashboard" target="_blank" rel="noopener noreferrer" style={{ color: '#888', fontSize: '0.85rem' }}>
+                  Vercel Dashboard ↗
+                </a>
+              </li>
             </ul>
           </nav>
           <main className="main-content">
