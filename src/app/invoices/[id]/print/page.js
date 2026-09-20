@@ -72,9 +72,12 @@ export default async function PrintInvoicePage(props) {
         <div className="invoice-box" style={{ display: 'flex', flexDirection: 'column', minHeight: '1050px' }}>
           {/* Top Header */}
           <div className="border-bottom" style={{ padding: '10px', textAlign: 'center', position: 'relative' }}>
-            <div style={{ position: 'absolute', left: '10px', top: '10px', fontSize: '10px' }}>2qGSTIN: 33AARFH4498J1ZQ</div>
-            <div style={{ fontSize: '14px', letterSpacing: '1px' }}>TAX INVOICE</div>
-            <div style={{ fontSize: '20px', margin: '5px 0' }}>HORSE POWER ELECTRICAL</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '5px' }}>
+              <div>GSTIN: 33AARFH4498J1ZQ</div>
+              <div style={{ fontSize: '14px', letterSpacing: '1px', fontWeight: 'bold' }}>TAX INVOICE</div>
+              <div>cell:9894301078</div>
+            </div>
+            <div style={{ fontSize: '24px', margin: '5px 0', fontWeight: 'bold' }}>HORSE POWER ELECTRICAL</div>
             <div style={{ fontSize: '12px' }}>Mfrs.: Motors &amp; Pumps</div>
             <div style={{ fontSize: '11px' }}>18/2 Sukaranthottam, Vivekananda Street, Udayampalayam, Chinnavedampatti (po), Coimbatore -641 049</div>
           </div>
@@ -83,17 +86,19 @@ export default async function PrintInvoicePage(props) {
           <div style={{ display: 'flex' }} className="border-bottom">
             {/* Left Column - To */}
             <div style={{ width: '50%' }} className="border-right p-2">
-              <div>To: {customer.name}</div>
-              <div style={{ whiteSpace: 'pre-wrap', marginLeft: '20px' }}>{customer.address}</div>
-              {customer.gstin && <div style={{ marginLeft: '20px' }}>GSTIN {customer.gstin}</div>}
-              {customer.phone && <div style={{ marginLeft: '20px' }}>PHN {customer.phone}</div>}
+              <div>TO: {customer.name}</div>
+              <div style={{ whiteSpace: 'pre-wrap', marginTop: '5px' }}>{customer.address}</div>
+              <div style={{ marginTop: '15px' }}>
+                {customer.gstin && <div>GSTIN: {customer.gstin}</div>}
+                {customer.phone && <div>PHN NO: {customer.phone}</div>}
+              </div>
             </div>
             
             {/* Right Column - Details */}
             <div style={{ width: '50%' }}>
               <div style={{ display: 'flex', padding: '4px' }} className="border-bottom">
-                <div style={{ width: '50%' }}>S. No: {invoice.invoiceNumber}</div>
-                <div style={{ width: '50%' }}>DATE {new Date(invoice.createdAt).toLocaleDateString('en-GB').replace(/\//g, '.')}</div>
+                <div style={{ width: '50%' }}>S.NO: {invoice.invoiceNumber}</div>
+                <div style={{ width: '50%' }}>DATE: {new Date(invoice.createdAt).toLocaleDateString('en-GB').replace(/\\//g, '.')}</div>
               </div>
               <div className="p-2">
                 <table style={{ border: 'none', width: '100%', padding: 0 }}>
@@ -117,19 +122,16 @@ export default async function PrintInvoicePage(props) {
                   <th rowSpan="2" style={{ borderTop: 'none', width: '45%', textAlign: 'center' }}>Description of Goods</th>
                   <th rowSpan="2" style={{ borderTop: 'none', width: '10%', textAlign: 'center' }}>HSN<br/>Code</th>
                   <th rowSpan="2" style={{ borderTop: 'none', width: '8%', textAlign: 'center' }}>Quantity</th>
-                  <th colSpan="2" style={{ borderTop: 'none', width: '16%', textAlign: 'center', borderBottom: '1px solid black' }}>Rate</th>
-                  <th colSpan="2" style={{ borderTop: 'none', borderRight: 'none', width: '16%', textAlign: 'center', borderBottom: '1px solid black' }}>Amount</th>
+                  <th rowSpan="2" style={{ borderTop: 'none', width: '12%', textAlign: 'center' }}>Rate</th>
+                  <th colSpan="2" style={{ borderTop: 'none', borderRight: 'none', width: '20%', textAlign: 'center', borderBottom: '1px solid black' }}>Amount</th>
                 </tr>
                 <tr>
-                  <th style={{ textAlign: 'center', borderTop: 'none' }}>Rs</th>
-                  <th style={{ textAlign: 'center', borderTop: 'none' }}>ps.</th>
-                  <th style={{ textAlign: 'center', borderTop: 'none' }}>Rs</th>
-                  <th style={{ borderRight: 'none', textAlign: 'center', borderTop: 'none' }}>ps.</th>
+                  <th style={{ textAlign: 'center', borderTop: 'none', width: '15%' }}>Rs</th>
+                  <th style={{ borderRight: 'none', textAlign: 'center', borderTop: 'none', width: '5%' }}>ps.</th>
                 </tr>
               </thead>
               <tbody>
                 {items.map((item, idx) => {
-                  const rateSplit = item.rate.toFixed(2).split('.');
                   const amountSplit = item.amount.toFixed(2).split('.');
                   return (
                     <tr key={item.id} style={{ height: '30px' }}>
@@ -139,8 +141,7 @@ export default async function PrintInvoicePage(props) {
                       </td>
                       <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.hsnCode}</td>
                       <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.quantity}</td>
-                      <td style={{ borderBottom: 'none', textAlign: 'right' }}>{rateSplit[0]}</td>
-                      <td style={{ borderBottom: 'none', textAlign: 'center' }}>{rateSplit[1]}</td>
+                      <td style={{ borderBottom: 'none', textAlign: 'center' }}>{item.rate}</td>
                       <td style={{ borderBottom: 'none', textAlign: 'right' }}>{amountSplit[0]}</td>
                       <td style={{ borderRight: 'none', borderBottom: 'none', textAlign: 'center' }}>{amountSplit[1]}</td>
                     </tr>
@@ -151,8 +152,9 @@ export default async function PrintInvoicePage(props) {
                   <td style={{ borderLeft: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
                   <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
                   <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
-                  <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
+                  <td style={{ borderBottom: 'none', borderTop: 'none', verticalAlign: 'bottom', textAlign: 'center', paddingBottom: '10px', fontWeight: 'bold' }}>
+                    {items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)}
+                  </td>
                   <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
                   <td style={{ borderBottom: 'none', borderTop: 'none' }}></td>
                   <td style={{ borderRight: 'none', borderBottom: 'none', borderTop: 'none' }}></td>
@@ -166,11 +168,11 @@ export default async function PrintInvoicePage(props) {
             {/* Left Footer: Words, Bank, Sign */}
             <div style={{ width: '60%', borderRight: '1px solid black', display: 'flex', flexDirection: 'column' }}>
               <div className="border-bottom p-2" style={{ minHeight: '40px' }}>
-                Total Amount (in words) : {numberToWords(Math.round(invoice.totalAmount)).toUpperCase()}
+                Total WORDS: {numberToWords(Math.round(invoice.totalAmount)).toUpperCase()}
               </div>
               
               <div className="border-bottom p-2" style={{ flexGrow: 1 }}>
-                <div style={{ textAlign: 'center', marginBottom: '5px' }}>Bank Details</div>
+                <div style={{ textAlign: 'center', marginBottom: '5px', fontWeight: 'bold' }}>Bank Details</div>
                 <table style={{ border: 'none', width: '100%' }}>
                   <tbody>
                     <tr>
@@ -183,7 +185,7 @@ export default async function PrintInvoicePage(props) {
                     </tr>
                     <tr>
                       <td style={{ border: 'none', padding: '2px 0' }}>A/c</td>
-                      <td style={{ border: 'none', padding: '2px 0' }}>: 510909010325465</td>
+                      <td style={{ border: 'none', padding: '2px 0' }}>: 51090910325465</td>
                     </tr>
                     <tr>
                       <td style={{ border: 'none', padding: '2px 0' }}>IFSC Code</td>
@@ -199,7 +201,7 @@ export default async function PrintInvoicePage(props) {
 
               <div className="p-2" style={{ position: 'relative', height: '60px' }}>
                 <div style={{ fontSize: '10px' }}>Received the above in good condition</div>
-                <div style={{ fontSize: '10px', marginTop: '5px' }}>Receiver's signature</div>
+                <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', fontSize: '10px' }}>Receiver's signature</div>
               </div>
             </div>
 
@@ -212,15 +214,15 @@ export default async function PrintInvoicePage(props) {
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.taxableValue.toFixed(0)}</td>
                   </tr>
                   <tr>
-                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>CGST @ {invoice.cgstRate || 9}</td>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>CGST @ {invoice.cgstRate ? \`\${invoice.cgstRate}%\` : ''}</td>
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.cgstAmount ? invoice.cgstAmount.toFixed(0) : ''}</td>
                   </tr>
                   <tr>
-                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>SGST @ {invoice.sgstRate || 9}</td>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>SGST @ {invoice.sgstRate ? \`\${invoice.sgstRate}%\` : ''}</td>
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.sgstAmount ? invoice.sgstAmount.toFixed(0) : ''}</td>
                   </tr>
                   <tr>
-                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>IGST @</td>
+                    <td style={{ borderLeft: 'none', borderTop: 'none', borderRight: '1px solid black', borderBottom: '1px solid black', padding: '4px 8px' }}>IGST @ {invoice.igstRate ? \`\${invoice.igstRate}%\` : ''}</td>
                     <td style={{ borderTop: 'none', borderRight: 'none', borderBottom: '1px solid black', padding: '4px 8px', textAlign: 'right' }}>{invoice.igstAmount ? invoice.igstAmount.toFixed(0) : ''}</td>
                   </tr>
                   <tr>
